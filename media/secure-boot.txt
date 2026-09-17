@@ -1,0 +1,3 @@
+Have been figuring how to open valorant and let vanguard successfully operate.
+There is an error message about secure boot, as the anti-cheat system needs enable secure boot state and it is currently disabled. 
+It requires us to access to bios to change the setting. But when secure boot is enable, the pc cannot restart normally as secure boot violation. Still figuring how to deal with it.
