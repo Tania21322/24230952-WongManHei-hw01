@@ -1,0 +1,225 @@
+{
+  "collection": "VALORANT",
+  "records": [
+    {
+      "id": "REC-001",
+      "title": "Recent ace",
+      "type": "video",
+      "file": "media/Omen-ace.mp4",
+      "date": "2026-07-26",
+      "place": "Map-Split",
+      "recorder": "Tania",
+      "not_captured": "the feeling of unexpected as the chamber did't know where I teleport",
+      "certainty": 5
+    },
+    {
+      "id": "REC-002",
+      "title": "Ticking Away",
+      "type": "sound",
+      "file": "media/ticking-away.mp3",
+      "date": "2026-08-12",
+      "place": "Seoul-INSPIRE Arena",
+      "recorder": "Tania",
+      "not_captured": "getting chills when I heard this orchestra version",
+      "certainty": 3
+    },
+    {
+      "id": "REC-003",
+      "title": "An error message about secure boot",
+      "type": "text",
+      "file": "media/secure-boot.txt",
+      "date": "2026-08-12",
+      "place": "home",
+      "recorder": "Tania",
+      "not_captured": "the feeling of being bothered and dissatisfied from the current situation",
+      "certainty": 3
+    },
+    {
+      "id": "REC-004",
+      "title": "First time mvp",
+      "type": "image",
+      "file": "media/first-mvp.png",
+      "date": "2023-07-11",
+      "place": "Map-Breeze",
+      "recorder": "Tania",
+      "not_captured": "the feeling of finally achieving something",
+      "certainty": 4
+    },
+    {
+      "id": "REC-005",
+      "title": "First ace",
+      "type": "image",
+      "file": "media/first-ace.png",
+      "date": "2023-11-29",
+      "place": "Map-Lotus",
+      "recorder": "Tania",
+      "not_captured": "how tense my hands felt during the round",
+      "certainty": 4
+    },
+    {
+      "id": "REC-006",
+      "title": "Odin ace",
+      "type": "image",
+      "file": "media/odin-ace.png",
+      "date": "2023-12-06",
+      "place": "Map-Sunset",
+      "recorder": "Tania",
+      "not_captured": "how I ended the round in less than 40 sec",
+      "certainty": 3.5
+    },
+    {
+      "id": "REC-007",
+      "title": "Losing streak",
+      "type": "image",
+      "file": "media/losing-streak.png",
+      "date": "2024-01-13",
+      "place": "Career-Match History",
+      "recorder": "Tania",
+      "not_captured": "the feeling of no matter how hard I tried, the team is not winning",
+      "certainty": 5
+    },
+    {
+      "id": "REC-008",
+      "title": "Nothing to lose with 0/100 rr",
+      "type": "image",
+      "file": "media/nothing-to-lose.png",
+      "date": "2024-01-26",
+      "place": "Map-Icebox",
+      "recorder": "Tania",
+      "not_captured": "the reason my team surrendered, thinking it is unwinnable",
+      "certainty": 4
+    },
+    {
+      "id": "REC-009",
+      "title": "Couldn't start the game",
+      "type": "image",
+      "file": "media/couldn't-start.png",
+      "date": "2024-04-04",
+      "place": "Error Message",
+      "recorder": "Tania",
+      "not_captured": "the reason and process of why I ended up in this",
+      "certainty": 4
+    },
+    {
+      "id": "REC-010",
+      "title": "Pistol round ace",
+      "type": "image",
+      "file": "media/pistol-round-ace.png",
+      "date": "2024-08-08",
+      "place": "Map-Lotus",
+      "recorder": "Tania",
+      "not_captured": "the feeling of entering match point with massive lead and also an ace",
+      "certainty": 5
+    },
+    {
+      "id": "REC-011",
+      "title": "Cheater detected",
+      "type": "image",
+      "file": "media/cheater-detected.png",
+      "date": "2024-01-24",
+      "place": "Inside a competitive match",
+      "recorder": "Tania",
+      "not_captured": "whether we are happy to end the match with this instead of losing, or time wasted for gaining nothing",
+      "certainty": 2
+    },
+    {
+      "id": "REC-012",
+      "title": "I think I deserve a higher rank",
+      "type": "image",
+      "file": "media/higher-rank-teammates.png",
+      "date": "2026-09-16",
+      "place": "Map-Abyss",
+      "recorder": "Tania",
+      "not_captured": "the realisation of knowing my teammates' rank and thinking I deserve a higher rank",
+      "certainty": 5
+    },
+    {
+      "id": "REC-013",
+      "title": "Watching VCT champion match",
+      "type": "video",
+      "file": "media/live-match.webm",
+      "date": "2024-08-24",
+      "place": "Seoul-INSPIRE Arena",
+      "recorder": "Tania",
+      "not_captured": "the excited feeling about upcoming match",
+      "certainty": 5
+    },
+    {
+      "id": "REC-014",
+      "title": "The VCT champion match ends",
+      "type": "video",
+      "file": "media/match-ending.mp4",
+      "date": "2026-08-12",
+      "place": "Seoul-INSPIRE Arena",
+      "recorder": "Tania",
+      "not_captured": "the feeling that even with Zero understanding of Korean, the winning moment broke the language barrier entirely",
+      "certainty": 5
+    },
+    {
+      "id": "REC-015",
+      "title": "Emotional rollercoaster",
+      "type": "image",
+      "file": "media/emotional-rollercoaster.png",
+      "date": "2025-06-06",
+      "place": "Night Market",
+      "recorder": "Tania",
+      "not_captured": "the emotional rollercoaster from seeing skin tiers to revealing the actual drop you got",
+      "certainty": 4
+    },
+    {
+      "id": "REC-016",
+      "title": "Top 5 hours of playtime agent data",
+      "type": "spreadsheet",
+      "file": "media/agents-data - Sheet1.csv",
+      "date": "2026-09-16",
+      "place": "not appliable",
+      "recorder": "Tania",
+      "not_captured": "emotional experience",
+      "certainty": 4
+    },
+    {
+      "id": "REC-017",
+      "title": "Playing games with ascendant is way too hard",
+      "type": "image",
+      "file": "media/ascendant.jpg",
+      "date": "2026-02-14",
+      "place": "Map-Pearl",
+      "recorder": "Tania",
+      "not_captured": "the frustration of kept getting killed by diamond and platinum rank",
+      "certainty": 3
+    },
+    {
+      "id": "REC-018",
+      "title": "Random agent (?)",
+      "type": "image",
+      "file": "media/reyna.jpg",
+      "date": "2026-03-02",
+      "place": "Map-Split",
+      "recorder": "Tania",
+      "not_captured": "the fun feeling that everyone go with the same agent, whether we did getting a random agent or not",
+      "certainty": 4
+    },
+    {
+      "id": "REC-019",
+      "title": "Champion Skin",
+      "type": "image",
+      "file": "media/champion-skin.png",
+      "date": "2025-11-04",
+      "place": "Map-Sunset",
+      "recorder": "Tania",
+      "not_captured": "the feeling of wishing to buy one but unable as it is limited",
+      "certainty": 4
+    },
+    {
+      "id": "REC-020",
+      "title": "Hardstuck in bronze",
+      "type": "image",
+      "file": "media/hardstuck.png",
+      "date": "2026-08-12",
+      "place": "Map-Breeze",
+      "recorder": "Tania",
+      "not_captured": "the feeling of being a bottom fragger, frustrated of unable to rank up",
+      "certainty": 3
+    }
+  ]
+}
