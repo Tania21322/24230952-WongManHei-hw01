@@ -50,7 +50,7 @@ label.radio{display:inline-flex;align-items:center;gap:7px;margin-right:22px;fon
 #insp{position:fixed;top:0;right:0;width:330px;height:calc(100% - 46px);background:#fff;border-left:1px solid var(--line);padding:22px;overflow:auto;z-index:45;display:none;box-shadow:-3px 0 14px rgba(0,0,0,.09)}
 #insp h3{font-family:Georgia,serif;font-weight:400;font-size:19px;margin:0 0 3px}
 #insp .cid{font:11px ui-monospace,monospace;color:var(--grn);margin-bottom:16px}
-#insp img,#insp audio{width:100%;margin-bottom:16px}
+#insp img,#insp audio,#insp video{width:100%;margin-bottom:16px}
 #insp dt{font:600 10px ui-monospace,monospace;letter-spacing:.1em;color:var(--mut);margin-top:13px}
 #insp dd{margin:3px 0 0;line-height:1.5;word-break:break-word;font-size:13px}
 #insp .nc dt,#insp .nc dd{color:var(--rust)}
@@ -142,12 +142,17 @@ const SYN={
  file:["file","image","img","media","path","src","audio","filename","url"],
  not_captured:["not_captured","notcaptured","missing","absent","what_was_not_captured","lost"],
  certainty:["certainty","confidence","sure","certainty_level"]};
-const IMG=/\.(jpe?g|png|webp|gif|bmp|heic)$/i, SND=/\.(mp3|wav|m4a|ogg|aac|flac)$/i;
+
+const IMG=/\.(jpe?g|png|webp|gif|bmp|heic)$/i;
+const SND=/\.(mp3|wav|m4a|ogg|aac|flac)$/i;
+const VID=/\.(mp4|webm|mov|m4v)$/i;
+const TXT=/\.(txt|csv|md|json)$/i;
+
 const CW=150, CH=176;
 
 let RAW=null, ROWS=[], MAP={}, RECKIND="person", RECMAP={}, ALLKEYS=[];
 let cards=[], groups=[], sel=new Set(), pan={x:0,y:0}, scale=1;
-const POS=new Map();                       // id -> {x,y}   never touch dataset during a drag
+const POS=new Map();                     // id -> {x,y}   never touch dataset during a drag
 const put=(el,x,y)=>{ const p=POS.get(el.dataset.id); p.x=x; p.y=y;
   el.style.transform=`translate3d(${x}px,${y}px,0)`; };
 const at=el=>POS.get(el.dataset.id);
@@ -246,13 +251,24 @@ $("go").onclick=()=>{
   recs.forEach(r=>RECMAP[r.id]=r);
   ALLKEYS=[...new Set(recs.flatMap(r=>Object.keys(r)))];
   $("setup").style.display="none"; $("bar").style.display="flex"; $("help").style.display="";
-  $("msg").textContent="preparing images\u2026";
+  $("msg").textContent="preparing records\u2026";
   recs.forEach((r,i)=>{
     const el=document.createElement("div");
     el.className="card"; el.dataset.id=r.id;
     const f=String(r.file||"");
-    el.innerHTML=(IMG.test(f)?`<img class="thumb" src="${f}" alt="" onerror="this.outerHTML='<div class=glyph>&#10005;</div>'">`
-                            :`<div class="glyph">${SND.test(f)?"&#9834;":"&#182;"}</div>`)
+    
+    let visualHTML=`<div class="glyph">&#182;</div>`;
+    if(IMG.test(f)){
+      visualHTML=`<img class="thumb" src="${f}" alt="" onerror="this.outerHTML='<div class=glyph>&#10005;</div>'">`;
+    } else if(VID.test(f)){
+      visualHTML=`<video class="thumb" src="${f}" muted preload="metadata"></video>`;
+    } else if(TXT.test(f)){
+      visualHTML=`<div class="glyph" style="font-size:12px;padding:6px;text-align:left;overflow:hidden;font-family:monospace">📄 text/data</div>`;
+    } else if(SND.test(f)){
+      visualHTML=`<div class="glyph">&#9834;</div>`;
+    }
+
+    el.innerHTML=visualHTML
       +`<div class="kid">${esc(r.id)}</div><div class="ttl">${esc(r.title||"")}</div>`
       +(xk&&has(r[xk])?`<div class="xtra">${esc(xk)}: ${show(r[xk]).slice(0,44)}</div>`:"")
       +`<div class="all">${allBlock(r)}</div>`;
@@ -265,10 +281,6 @@ $("go").onclick=()=>{
   makeThumbs(recs);
 };
 
-/* Phone photographs are 3000-4000px wide and are being shown at 136px.
-   The browser decodes every one of them at full size and keeps it in memory,
-   which is what makes a scaled, transformed board stutter.
-   Decode each one ONCE into a small bitmap, then use that everywhere. */
 const THUMB=new Map();
 async function makeThumbs(recs){
   const jobs=recs.filter(r=>IMG.test(String(r.file||"")));
@@ -290,7 +302,7 @@ async function makeThumbs(recs){
         const el=cards.find(c=>c.dataset.id===r.id);
         const tag=el&&el.querySelector("img.thumb");
         if(tag) tag.src=url;
-      }catch(err){ /* not served: keep the original, just slower */ }
+      }catch(err){}
     }
     done++;
     $("msg").textContent=done<jobs.length?`preparing images ${done} / ${jobs.length}`:"";
@@ -405,11 +417,29 @@ function drawGroups(only){
 }
 
 /* ── inspector ── */
-function inspect(id){
+async function inspect(id){
   const r=RECMAP[id]; if(!r) return;
   const f=String(r.file||"");
+  
+  let mediaHTML="";
+  if(IMG.test(f)){
+    mediaHTML=`<img src="${f}" alt="">`;
+  } else if(VID.test(f)){
+    mediaHTML=`<video controls src="${f}"></video>`;
+  } else if(SND.test(f)){
+    mediaHTML=`<audio controls src="${f}"></audio>`;
+  } else if(TXT.test(f)){
+    try {
+      const res=await fetch(f);
+      const textData=await res.text();
+      mediaHTML=`<pre style="background:var(--bg2);padding:10px;font-size:11px;max-height:150px;overflow:auto;font-family:monospace">${esc(textData.slice(0,1000))}</pre>`;
+    } catch(e){
+      mediaHTML=`<div class="cov">Could not load text preview</div>`;
+    }
+  }
+
   $("inspBody").innerHTML=`<h3>${esc(r.title||"")}</h3><div class="cid">${esc(r.id)}</div>`
-    +(IMG.test(f)?`<img src="${f}" alt="">`:SND.test(f)?`<audio controls src="${f}"></audio>`:"")
+    + mediaHTML
     +"<dl>"+ALLKEYS.filter(k=>k!=="id"&&k!=="title").map(k=>
       `<div class="${k==="not_captured"?"nc":""} ${has(r[k])?"":"absent"}"><dt>${esc(k)}</dt><dd>${has(r[k])?show(r[k]):"not in this record"}</dd></div>`
      ).join("")+"</dl>";
@@ -462,7 +492,7 @@ $("png").onclick=async()=>{
   const imgs=await Promise.all(cards.map(c=>{
     const id=c.dataset.id, f=String((RECMAP[id]||{}).file||"");
     if(!IMG.test(f)) return Promise.resolve(null);
-    return loadImg(THUMB.get(id)||f);       // cached bitmap when we have one
+    return loadImg(THUMB.get(id)||f);
   }));
 
   x.textBaseline="top";
@@ -479,7 +509,8 @@ $("png").onclick=async()=>{
     } else {
       x.fillStyle="#DDE4DF"; x.fillRect(px+p,py+p,iw,ih);
       x.fillStyle="#66736F"; x.font=`${Math.round(34*s)}px serif`; x.textAlign="center";
-      x.fillText(SND.test(f)?"\u266A":"\u00B6", px+pw/2, py+p+ih/2-20*s); x.textAlign="left";
+      const symbol = VID.test(f) ? "▶" : SND.test(f) ? "♪" : TXT.test(f) ? "📄" : "¶";
+      x.fillText(symbol, px+pw/2, py+p+ih/2-20*s); x.textAlign="left";
     }
     x.fillStyle="#2E6B55"; x.font=`${Math.round(10*s)}px ui-monospace, monospace`;
     x.fillText(String(r.id||""), px+p, py+p+ih+6*s);
@@ -508,8 +539,7 @@ $("png").onclick=async()=>{
   }
 };
 
-
-/* ─────────── export a readable document of every record ─────────── */
+/* ─────────── export document ─────────── */
 function docHTML(){
   const hdg=$("bh").value.trim()||"The Board";
   const inGroup=new Set(); groups.forEach(g=>g.members.forEach(id=>inGroup.add(id)));
@@ -518,12 +548,20 @@ function docHTML(){
   const item=id=>{
     const r=RECMAP[id]||{}, f=String(r.file||"");
     const th=THUMB.get(id);
-    const kind=IMG.test(f)?"image":SND.test(f)?"sound":f?"text":"\u2014";
+    const kind = IMG.test(f) ? "image" 
+               : VID.test(f) ? "video" 
+               : SND.test(f) ? "sound" 
+               : TXT.test(f) ? "document" 
+               : f ? "file" : "\u2014";
+    const phContent = kind === "video" ? "▶" 
+                    : kind === "sound" ? "♪" 
+                    : kind === "document" ? "📄" 
+                    : "✕";
     const rows=ALLKEYS.filter(k=>k!=="id"&&k!=="title").map(k=>
       `<tr><th>${esc(k)}</th><td class="${has(r[k])?"":"absent"}">${
         has(r[k])?show(r[k]):"not in this record"}</td></tr>`).join("");
     return `<div class="item">
-      <div class="thumbcol">${th?`<img src="${th}">`:`<div class="ph">${kind==="sound"?"\u266A":kind==="text"?"\u00B6":"\u2715"}</div>`}
+      <div class="thumbcol">${th?`<img src="${th}">`:`<div class="ph">${phContent}</div>`}
         <div class="kind">${kind}</div></div>
       <div class="meta"><div class="rid">${esc(id)}</div>
         <h3>${esc(r.title||"")}</h3><table>${rows}</table></div></div>`;
@@ -610,25 +648,31 @@ $("save").onclick=()=>{
   const positions={};
   cards.forEach(c=>{ const p=at(c); positions[c.dataset.id]={
     x:+((p.x-minX)/rx).toFixed(4), y:+((p.y-minY)/ry).toFixed(4),
-    world_x:Math.round(p.x), world_y:Math.round(p.y) }; });
-  const out={ made_with:"ARTT3005 board",
-    board_heading:$("bh").value.trim()||null,
-    recorder_is:RECKIND, key_mapping:MAP,
-    extra_fields:Object.keys(MAP).filter(k=>!MAP[k]),
-    shown_on_card:$("extraPick").value||null,
+    world_x:Math.round(p.x), world_y:Math.round(p.y)
+  }; });
+
+  const payload={
+    heading:$("bh").value.trim(),
+    created:new Date().toISOString(),
     groups:groups.map(g=>({heading:g.heading,members:g.members})),
-    positions };
-  if(!groups.length&&!confirm("You have not made any groups.\n\nThe headings are the part the machine cannot write. Save anyway?")) return;
-  dl(out,"arrangement.json");
-  $("msg").textContent="saved "+Object.keys(positions).length+" cards";
-};
-$("dlMap").onclick=()=>dl({key_mapping:MAP,recorder_is:RECKIND},"mapping.json");
-function dl(o,name){
+    positions:positions
+  };
+
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,2)],{type:"application/json"}));
-  a.download=name; a.click();
-}
-document.addEventListener("change",e=>{ if(e.target.name==="rec") RECKIND=e.target.value; });
-addEventListener("resize",()=>{applyT();drawGroups()});
+  a.href=URL.createObjectURL(blob);
+  a.download="arrangement-"+new Date().toISOString().slice(0,10)+".json";
+  a.click();
+  $("msg").textContent="arrangement.json saved";
+};
+
+$("dlMap").onclick=()=>{
+  const blob=new Blob([JSON.stringify(MAP,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="mapping.json";
+  a.click();
+};
 </script>
-</body></html>
+</body>
+</html>
